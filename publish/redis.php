@@ -26,7 +26,7 @@ return [
         'sentinel' => [
             'enable' => (bool)env('REDIS_SENTINEL_ENABLE', false),
             'master_name' => env('REDIS_MASTER_NAME', 'mymaster'),
-            'ips' => explode(';', env('REDIS_SENTINEL_IP', '')),
+            'nodes' => explode(';', env('REDIS_SENTINEL_NODE', '')),
             'persistent' => '',
             'read_timeout' => 0,
         ],

@@ -193,25 +193,25 @@ class RedisConnection extends BaseConnection implements ConnectionInterface
     protected function createRedisSentinel()
     {
         try {
-            $ips = $this->config['sentinel']['ips'] ?? [];
+            $nodes = $this->config['sentinel']['nodes'] ?? [];
             $timeout = $this->config['timeout'] ?? 0;
             $persistent = $this->config['sentinel']['persistent'] ?? null;;
             $retryInterval = $this->config['retry_interval'] ?? 0;
             $readTimeout = $this->config['sentinel']['read_timeout'] ?? 0;;
             $masterName = $this->config['sentinel']['master_name'] ?? '';
 
-            foreach ($ips as $ip) {
-                list($sentinelHost, $sentinelPort) = explode(':', $ip);
+            foreach ($nodes as $node) {
+                list($sentinelHost, $sentinelPort) = explode(':', $node);
                 $sentinel = new \RedisSentinel($sentinelHost, intval($sentinelPort), $timeout, $persistent,
                     $retryInterval,
                     $readTimeout);
                 $masterInfo = $sentinel->getMasterAddrByName($masterName);
                 if ($masterInfo !== false) {
-                    list($address, $port) = $masterInfo;
+                    list($host, $port) = $masterInfo;
                     break;
                 }
             }
-            $redis = $this->createRedis($address, $port, $timeout);
+            $redis = $this->createRedis($host, $port, $timeout);
         } catch (\Throwable $e) {
             throw new ConnectionException('Connection reconnect failed ' . $e->getMessage());
         }
